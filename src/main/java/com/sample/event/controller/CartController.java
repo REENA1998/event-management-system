@@ -3,6 +3,7 @@ package com.sample.event.controller;
 import com.sample.event.model.CartItem;
 import com.sample.event.repository.CartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -91,5 +92,22 @@ public class CartController {
     @GetMapping("/count")
     public long getCartCount(@RequestParam Long userId) {
         return cartRepo.countByUserId(userId);
+    }
+
+    @GetMapping("/items")
+    public ResponseEntity<?> getCartItems(@RequestParam Long userId) {
+        return ResponseEntity.ok(cartRepo.findByUserId(userId));
+    }
+
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<?> removeFromCart(@PathVariable Long id) {
+        cartRepo.deleteById(id);
+        return ResponseEntity.ok("Item removed");
+    }
+
+    @DeleteMapping("/clear")
+    public ResponseEntity<?> clearCart(@RequestParam Long userId) {
+        cartRepo.deleteByUserId(userId);
+        return ResponseEntity.ok("Cart cleared");
     }
 }
