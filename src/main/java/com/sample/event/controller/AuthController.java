@@ -19,7 +19,7 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
-        User user = userService.signup(request.getName(), request.getEmail(), request.getPassword());
+        User user = userService.signup(request.getName(), request.getEmail(), request.getPassword(), request.getRole());
 
         if (user == null) {
             return ResponseEntity.status(HttpStatus.CONFLICT)

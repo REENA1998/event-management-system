@@ -13,7 +13,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public User signup(String name, String email, String password) {
+    public User signup(String name, String email, String password, String role) {
         // Check if user already exists
         Optional<User> existing = userRepository.findByEmail(email);
         if (existing.isPresent()) {
@@ -24,6 +24,7 @@ public class UserService {
         user.setName(name);
         user.setEmail(email);
         user.setPassword(password);
+        user.setRole(role != null ? role : "USER"); // Default to USER if role not specified
 
         return userRepository.save(user);
     }

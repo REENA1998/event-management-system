@@ -1,37 +1,55 @@
 package com.sample.event.controller;
 
+import com.sample.event.model.Vendor;
+import com.sample.event.repository.VendorRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/ai")
 @CrossOrigin
 public class SuggestionController {
 
+    @Autowired
+    private VendorRepository vendorRepo;
+
     @GetMapping("/suggest")
     public Map<String, Object> suggest(@RequestParam double budget) {
 
-        // Hardcoded pricing (matching frontend)
-        Map<String, Double> basePrices = new LinkedHashMap<>();
-        basePrices.put("Venue", 60000.0);
-        basePrices.put("Catering", 40000.0);
-        basePrices.put("Decorations", 20000.0);
-        basePrices.put("Photography", 15000.0);
-        basePrices.put("Sound/DJ", 12000.0);
-        basePrices.put("Car Rentals", 12000.0);
-        basePrices.put("Dressing", 10000.0);
-        basePrices.put("Makeup", 8000.0);
-        basePrices.put("MC/Anchor", 7000.0);
-        basePrices.put("Lighting", 5000.0);
+        // Get all approved vendors
+        List<Vendor> allVendors = vendorRepo.findByStatus("APPROVED");
+
+        // Group by category and get the minimum price vendor for each category
+        Map<String, Double> categoryMinPrices = new LinkedHashMap<>();
+
+        // Define the order of categories
+        List<String> categoryOrder = Arrays.asList(
+            "Venue", "Catering", "Decorations", "Photography",
+            "Sound/DJ", "Car Rentals", "Dressing", "Makeup",
+            "MC/Anchor", "Lighting"
+        );
+
+        for (String category : categoryOrder) {
+            List<Vendor> categoryVendors = allVendors.stream()
+                .filter(v -> v.getCategory().equals(category))
+                .collect(Collectors.toList());
+
+            if (!categoryVendors.isEmpty()) {
+                double minPrice = categoryVendors.stream()
+                    .mapToDouble(Vendor::getPrice)
+                    .min()
+                    .orElse(0.0);
+                categoryMinPrices.put(category, minPrice);
+            }
+        }
 
         List<String> selected = new ArrayList<>();
         double total = 0;
 
-        for (Map.Entry<String, Double> entry : basePrices.entrySet()) {
+        for (Map.Entry<String, Double> entry : categoryMinPrices.entrySet()) {
             if (total + entry.getValue() <= budget) {
                 selected.add(entry.getKey());
                 total += entry.getValue();

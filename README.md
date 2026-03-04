@@ -1,79 +1,66 @@
-# 🎉 Event Management System
+# Event AI - Intelligent Event Management System
 
-A full-stack event management application with **Spring Boot backend** and **HTML/JavaScript frontend** featuring AI-powered budget recommendations.
+An intelligent event management platform that connects event planners with vendors, featuring AI-powered budget recommendations and role-based dashboards.
 
-![Java](https://img.shields.io/badge/Java-17-orange)
-![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.2-brightgreen)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-14+-blue)
-![License](https://img.shields.io/badge/License-MIT-yellow)
-
-
-## ✨ Features
+## Features
 
 ### 🎯 Core Features
-- ✅ **User Authentication** - Email-based registration and login system
-- ✅ **AI Budget Assistant** - Smart recommendations based on budget constraints
-- ✅ **Dynamic Vendor Display** - Shows only vendors within budget
-- ✅ **Shopping Cart** - Add/remove event services
-- ✅ **Order Management** - Place and track orders
-- ✅ **Real-time Cart Count** - Live updates of cart items
-- ✅ **Beautiful UI/UX** - Modern gradient design with smooth animations
-- ✅ **Custom Modal Dialogs** - Professional confirmation and success messages
-- ✅ **Responsive Design** - Works seamlessly on desktop, tablet, and mobile
+- **Role-Based Access Control**: Separate dashboards for Users, Vendors, and Admins
+- **AI Budget Planner**: Smart recommendations based on your budget
+- **Vendor Management**: Complete CRUD operations for vendor services
+- **Real-Time Cart System**: Add/remove services with live updates
+- **Order Management**: Place and track orders
+- **Admin Approval System**: Vendors require admin approval before listing
 
-### 🤖 AI Budget Features
-- Intelligent vendor recommendations based on budget
-- Prioritizes essential services first
-- Shows estimated total cost
-- Dynamically updates vendor availability
-- Supports budgets from ₹5,000 to unlimited
+### 👥 User Roles
 
-### 🏪 Available Vendors (10 Services)
-1. 🏛️ **Venue** - ₹60,000 - Premium event venue
-2. 🍽️ **Catering** - ₹40,000 - Delicious food for guests
-3. 🎨 **Decorations** - ₹20,000 - Beautiful event decorations
-4. 📸 **Photography** - ₹15,000 - Professional photography
-5. 🎵 **Sound/DJ** - ₹12,000 - Amazing sound and DJ services
-6. 🚗 **Car Rentals** - ₹12,000 - Luxury car rental services
-7. 👔 **Dressing** - ₹10,000 - Professional styling
-8. 💄 **Makeup** - ₹8,000 - Expert makeup artists
-9. 🎤 **MC/Anchor** - ₹7,000 - Professional event host
-10. 💡 **Lighting** - ₹5,000 - Stunning lighting setup
+#### 1. **User/Event Planner**
+- Browse approved vendors by category
+- Get AI-powered budget recommendations
+- Add services to cart
+- Place orders
+- View cart with total calculation
 
-## 🛠 Technology Stack
+#### 2. **Vendor**
+- Register and add business services
+- Upload service details with images
+- Set pricing and availability
+- View service status (Pending/Approved/Rejected)
+- Edit and delete services
+
+#### 3. **Admin**
+- View dashboard statistics
+- Approve/Reject vendor registrations
+- Edit vendor details
+- Delete vendors
+- View all users and orders
+
+## Technology Stack
 
 ### Backend
-- **Java 17** - Programming language
-- **Spring Boot 3.2.2** - Application framework
-- **Spring Data JPA** - Database ORM
-- **PostgreSQL** - Relational database
-- **Maven** - Build tool
-- **Lombok** - Reduce boilerplate code
+- **Java 17**
+- **Spring Boot 3.2.2**
+- **Spring Data JPA**
+- **PostgreSQL**
+- **Lombok**
 
 ### Frontend
-- **HTML5** - Structure
-- **CSS3** - Styling with gradients and animations
-- **Vanilla JavaScript** - Client-side logic
-- **Fetch API** - RESTful API communication
-- **Responsive Design** - Mobile-first approach
+- **HTML5**
+- **CSS3** (Modern gradient designs)
+- **Vanilla JavaScript**
+- **RESTful API integration**
 
+## Getting Started
 
-## 🚀 Installation & Setup
+### Database Setup
 
-### 1. Clone the Repository
-```bash
-git clone https://github.com/REENA1998/event-management-system.git
-cd event-management-system
+1. Install PostgreSQL
+2. Create database:
+```sql
+CREATE DATABASE eventdb;
 ```
 
-### 2. Setup PostgreSQL Database
-```bash
-# Create database
-createdb eventdb
-```
-
-### 3. Configure Database (Optional)
-Edit `src/main/resources/application.yml` if needed:
+3. Update database credentials in `src/main/resources/application.yml`:
 ```yaml
 spring:
   datasource:
@@ -82,136 +69,151 @@ spring:
     password: postgres
 ```
 
-### 4. Build the Project
-```bash
-mvn clean install
-```
+### Run Application
 
-## 🏃 Running the Application
-
-### Start Backend
 ```bash
 mvn spring-boot:run
 ```
 
-### Open Frontend
-Open `frontendsample07.html` in your browser
+The application will start on `http://localhost:8088`
 
-**Backend API:** http://localhost:8088
+## Usage
 
-## 📡 API Endpoints
+### First Time Setup
 
-### Base URL
+1. **Create Admin Account**
+   - Open `http://localhost:8088/index.html`
+   - Click "Sign Up"
+   - Register with role "Event Planner / User"
+   - Manually update the user's role to "ADMIN" in the database
+
+2. **Register as Vendor**
+   - Sign up with role "Vendor / Service Provider"
+   - Add your services in the vendor dashboard
+   - Wait for admin approval
+
+3. **Browse as User**
+   - Sign up as a regular user
+   - Browse approved vendors
+   - Use AI budget planner for recommendations
+   - Add services to cart and place orders
+
+## API Endpoints
+
+### Authentication
+- `POST /api/auth/signup` - Register new user
+- `POST /api/auth/login` - User login
+
+### Vendor Management
+- `POST /api/vendor/register` - Register new vendor service
+- `GET /api/vendor/approved` - Get all approved vendors
+- `GET /api/vendor/category/{category}` - Get vendors by category
+- `GET /api/vendor/my-vendors/{userId}` - Get vendor's services
+- `PUT /api/vendor/update/{id}` - Update vendor service
+- `DELETE /api/vendor/delete/{id}` - Delete vendor service
+
+### Cart Operations
+- `POST /api/cart/add` - Add item to cart
+- `GET /api/cart/items?userId={id}` - Get cart items
+- `GET /api/cart/count?userId={id}` - Get cart count
+- `DELETE /api/cart/remove/{id}` - Remove item from cart
+- `DELETE /api/cart/clear?userId={id}` - Clear cart
+
+### Order Management
+- `POST /api/order/place?userId={id}` - Place order
+- `GET /api/order/user/{userId}` - Get user's orders
+
+### AI Suggestions
+- `GET /api/ai/suggest?budget={amount}` - Get AI recommendations
+
+### Admin Operations
+- `GET /api/admin/vendors` - Get all vendors
+- `GET /api/admin/vendors/pending` - Get pending vendors
+- `PUT /api/admin/vendors/approve/{id}` - Approve vendor
+- `PUT /api/admin/vendors/reject/{id}` - Reject vendor
+- `PUT /api/admin/vendors/update/{id}` - Update vendor
+- `DELETE /api/admin/vendors/delete/{id}` - Delete vendor
+- `GET /api/admin/stats` - Get dashboard statistics
+
+## Service Categories
+
+- Venue
+- Catering
+- Photography
+- Decorations
+- Sound/DJ
+- Makeup
+- Car Rentals
+- Dressing
+- MC/Anchor
+- Lighting
+
+## Project Structure
+
 ```
-http://localhost:8088
+event-managment/
+├── src/
+│   └── main/
+│       ├── java/
+│       │   └── com/sample/event/
+│       │       ├── controller/
+│       │       │   ├── AdminController.java
+│       │       │   ├── AuthController.java
+│       │       │   ├── CartController.java
+│       │       │   ├── OrderController.java
+│       │       │   ├── SuggestionController.java
+│       │       │   └── VendorController.java
+│       │       ├── model/
+│       │       │   ├── CartItem.java
+│       │       │   ├── Order.java
+│       │       │   ├── User.java
+│       │       │   └── Vendor.java
+│       │       ├── repository/
+│       │       │   ├── CartRepository.java
+│       │       │   ├── OrderRepository.java
+│       │       │   ├── UserRepository.java
+│       │       │   └── VendorRepository.java
+│       │       └── service/
+│       │           └── UserService.java
+│       └── resources/
+│           └── application.yml
+├── index.html
+├── user-dashboard.html
+├── vendor-dashboard.html
+├── admin-dashboard.html
+└── pom.xml
 ```
 
-### User Registration
-```http
-POST /api/auth/signup
-Content-Type: application/json
+## Features Highlights
 
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
+### Dynamic Vendor System
+- No hardcoded vendor data
+- Real-time vendor registration
+- Image support for services
+- Location-based filtering
 
-### User Login
-```http
-POST /api/auth/login
-Content-Type: application/json
+### Smart AI Recommendations
+- Budget-based suggestions
+- Category prioritization
+- Real-time price calculations
 
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
+### Modern UI/UX
+- Gradient designs
+- Responsive layout
+- Smooth animations
+- Custom alerts and modals
+- Mobile-friendly
 
-### Add to Cart
-```http
-POST /api/cart/add
-Content-Type: application/json
+## Notes
 
-{
-  "userId": 1,
-  "vendorId": 1
-}
-```
-
-### Get Cart Count
-```http
-GET /api/cart/count?userId=1
-```
-
-### Place Order
-```http
-POST /api/order/place?userId=1
-```
-
-### AI Budget Suggestions
-```http
-GET /api/ai/suggest?budget=100000
-```
-
-
-## 🎨 Frontend Features
-
-- **Authentication** - Signup and Login forms
-- **AI Budget Assistant** - Get smart vendor recommendations
-- **Dynamic Vendor Grid** - Shows vendors within budget
-- **Shopping Cart** - Real-time cart count updates
-- **Custom Modal Dialogs** - Beautiful confirmation and success messages
-- **Responsive Design** - Works on all devices
-
-## 🗄 Database Schema
-
-### Users Table
-```sql
-CREATE TABLE users (
-    id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(255) NOT NULL
-);
-```
-
-### Cart Items Table
-```sql
-CREATE TABLE cart_item (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
-    vendor_id BIGINT NOT NULL,
-    item_name VARCHAR(255) NOT NULL,
-    price DOUBLE PRECISION NOT NULL
-);
-```
-
-### Orders Table
-```sql
-CREATE TABLE orders (
-    id BIGSERIAL PRIMARY KEY,
-    user_id BIGINT NOT NULL,
-    total_amount DOUBLE PRECISION NOT NULL
-);
-```
-
-**Note:** Tables are created automatically by Hibernate on first run.
-
-## 🧪 How to Use
-
-1. **Start Backend**: Run `mvn spring-boot:run`
-2. **Open Frontend**: Open `frontendsample07.html` in browser
-3. **Register**: Create account with name, email, password
-4. **Login**: Sign in with your credentials
-5. **AI Assistant**: Enter budget and get recommendations
-6. **Add to Cart**: Click on vendors to add services
-7. **Place Order**: Complete your booking
+- All vendor listings require admin approval
+- Users can only see approved vendors
+- Vendors can manage their own services
+- Admin has full control over the platform
+- Email validation with regex pattern
+- Secure password handling
 
 ---
 
-**Made with ❤️ by REENA**
-
-**Star ⭐ this repository if you found it helpful!**
+**Built with ❤️ for efficient event management**
 

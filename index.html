@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event AI - Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            display: flex;
+        }
+
+        .left-panel {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .left-panel h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .left-panel p {
+            font-size: 16px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .right-panel {
+            padding: 60px 40px;
+            flex: 1;
+        }
+
+        .form-container {
+            max-width: 400px;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .error {
+            border-color: #ff4444 !important;
+        }
+
+        .error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .toggle-form a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .toggle-form a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .left-panel {
+                padding: 40px 30px;
+            }
+
+            .left-panel h1 {
+                font-size: 28px;
+            }
+
+            .right-panel {
+                padding: 40px 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h1>🎉 Event AI</h1>
+            <p>Your intelligent event management platform. Plan perfect events with AI-powered recommendations and connect with the best vendors in your area.</p>
+        </div>
+        <div class="right-panel">
+            <div class="form-container">
+                <div id="alert" class="alert"></div>
+
+                <!-- Login Form -->
+                <div id="loginForm">
+                    <h2>Welcome Back</h2>
+                    <p class="subtitle">Login to continue</p>
+                    <form onsubmit="handleLogin(event)">
+                        <div class="form-group">
+                            <label for="loginEmail">Email</label>
+                            <input type="email" id="loginEmail" required placeholder="your@email.com">
+                            <div class="error-message" id="loginEmailError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password</label>
+                            <input type="password" id="loginPassword" required placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="btn">Login</button>
+                    </form>
+                    <div class="toggle-form">
+                        Don't have an account? <a href="#" onclick="toggleForm()">Sign Up</a>
+                    </div>
+                </div>
+
+                <!-- Signup Form -->
+                <div id="signupForm" style="display: none;">
+                    <h2>Create Account</h2>
+                    <p class="subtitle">Join Event AI today</p>
+                    <form onsubmit="handleSignup(event)">
+                        <div class="form-group">
+                            <label for="signupName">Full Name</label>
+                            <input type="text" id="signupName" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="signupEmail">Email</label>
+                            <input type="email" id="signupEmail" required placeholder="your@email.com">
+                            <div class="error-message" id="signupEmailError"></div>
+                        </div>
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <input type="password" id="signupPassword" required placeholder="••••••••" minlength="6">
+                        </div>
+                        <div class="form-group">
+                            <label for="signupRole">I am a</label>
+                            <select id="signupRole" required>
+                                <option value="USER">Event Planner / User</option>
+                                <option value="VENDOR">Vendor / Service Provider</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn">Sign Up</button>
+                    </form>
+                    <div class="toggle-form">
+                        Already have an account? <a href="#" onclick="toggleForm()">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8088/api';
+
+        function toggleForm() {
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const alert = document.getElementById('alert');
+
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                signupForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                signupForm.style.display = 'block';
+            }
+
+            alert.style.display = 'none';
+            clearErrors();
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+            document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
+        }
+
+        function validateEmail(email) {
+            const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return regex.test(email);
+        }
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+
+            setTimeout(() => {
+                alert.style.display = 'none';
+            }, 5000);
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!validateEmail(email)) {
+                document.getElementById('loginEmail').classList.add('error');
+                document.getElementById('loginEmailError').textContent = 'Please enter a valid email address';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (response.ok) {
+                    const user = await response.json();
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+
+                    // Redirect based on role
+                    if (user.role === 'ADMIN') {
+                        window.location.href = 'admin-dashboard.html';
+                    } else if (user.role === 'VENDOR') {
+                        window.location.href = 'vendor-dashboard.html';
+                    } else {
+                        window.location.href = 'user-dashboard.html';
+                    }
+                } else {
+                    const error = await response.text();
+                    if (error === 'USER_NOT_FOUND') {
+                        showAlert('Account not found. Please sign up first.', 'error');
+                        setTimeout(() => toggleForm(), 2000);
+                    } else {
+                        showAlert('Invalid email or password', 'error');
+                    }
+                }
+            } catch (error) {
+                showAlert('Connection error. Please try again.', 'error');
+            }
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            clearErrors();
+
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const role = document.getElementById('signupRole').value;
+
+            if (!validateEmail(email)) {
+                document.getElementById('signupEmail').classList.add('error');
+                document.getElementById('signupEmailError').textContent = 'Please enter a valid email address';
+                return;
+            }
+
+            if (password.length < 6) {
+                showAlert('Password must be at least 6 characters long', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/auth/signup`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password, role })
+                });
+
+                if (response.ok) {
+                    const user = await response.json();
+                    showAlert('Account created successfully! Logging you in...', 'success');
+
+                    setTimeout(() => {
+                        localStorage.setItem('currentUser', JSON.stringify(user));
+
+                        // Redirect based on role
+                        if (user.role === 'ADMIN') {
+                            window.location.href = 'admin-dashboard.html';
+                        } else if (user.role === 'VENDOR') {
+                            window.location.href = 'vendor-dashboard.html';
+                        } else {
+                            window.location.href = 'user-dashboard.html';
+                        }
+                    }, 1500);
+                } else {
+                    const error = await response.text();
+                    if (error === 'USER_ALREADY_EXISTS') {
+                        showAlert('An account with this email already exists', 'error');
+                    } else {
+                        showAlert('Registration failed. Please try again.', 'error');
+                    }
+                }
+            } catch (error) {
+                showAlert('Connection error. Please try again.', 'error');
+            }
+        }
+    </script>
+</body>
+</html>
+
