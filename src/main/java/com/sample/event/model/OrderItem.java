@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "cart_items")
+@Table(name = "order_items")
 @Data
-public class CartItem {
+public class OrderItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +14,9 @@ public class CartItem {
 
     @Column(name = "user_id")
     private Long userId;
+
+    @Column(name = "order_id")
+    private Long orderId;
 
     @Column(name = "vendor_id")
     private Long vendorId;
@@ -29,9 +32,5 @@ public class CartItem {
 
     @Column(name = "image_url", length = 500)
     private String imageUrl;
-
-    // Deprecated: keeping for backward compatibility
-    @Column(name = "item_name")
-    private String itemName;
 }
 

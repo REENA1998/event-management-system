@@ -19,17 +19,20 @@ CREATE DATABASE eventdb;
 # Navigate to your project folder:
 cd /Users/REEVICT/Downloads/event-managment
 
-# Run the application:
-mvn spring-boot:run
+# Clean build and run:
+mvn clean spring-boot:run
 ```
 
 **Wait for this message in terminal:**
 ```
+✅ Sample vendor data initialized successfully!
 Started EventApplication in X.XXX seconds
 ```
 
 ### Step 3: Open Browser
 Open: **http://localhost:8088/index.html**
+
+**Note:** The system automatically creates 27 sample vendors on first run!
 
 ---
 
@@ -37,42 +40,34 @@ Open: **http://localhost:8088/index.html**
 
 ### 1️⃣ FIRST TIME SETUP (Create Admin)
 
-**Step 1: Create First User**
+**Step 1: Create Admin User**
 - Open browser: `http://localhost:8088/index.html`
 - Click **"Sign Up"**
 - Enter:
   - Name: `Admin`
   - Email: `admin@test.com`
   - Password: `admin123`
-  - Role: `Event Planner / User`
+  - Role: **`Administrator`** ⬅️ Select this!
 - Click **"Sign Up"**
 
-**Step 2: Make User an Admin**
-```bash
-# Open new terminal window
-psql -U postgres -d eventdb
-
-# Run this command:
-UPDATE users SET role = 'ADMIN' WHERE email = 'admin@test.com';
-
-# Verify:
-SELECT name, email, role FROM users;
-
-# Exit:
-\q
-```
-
-**Step 3: Login as Admin**
-- Go back to browser
-- Refresh page or go to: `http://localhost:8088/index.html`
-- Email: `admin@test.com`
-- Password: `admin123`
-- Click **"Login"**
+**Step 2: Login as Admin**
+- You'll be automatically logged in
 - You'll see **Admin Dashboard** ⚙️
+- Dashboard shows:
+  - **27 pre-loaded sample vendors** (all approved!)
+  - 5 Venue options
+  - 5 Decorations options
+  - 5 Dressing options
+  - 5 Lighting options
+  - 7 other category vendors
+
+**No manual database commands needed!**
 
 ---
 
-### 2️⃣ VENDOR REGISTRATION (Add Services)
+### 2️⃣ VENDOR REGISTRATION (Optional - Add More Services)
+
+**Note:** The system already has 27 sample vendors loaded! You can skip this section for testing, or add your own.
 
 **Step 1: Register as Vendor**
 - Open **new browser tab** or **incognito window**
@@ -86,45 +81,17 @@ SELECT name, email, role FROM users;
 - Click **"Sign Up"**
 - You'll see **Vendor Dashboard** 🏪
 
-**Step 2: Add First Service**
+**Step 2: Add Your Service**
 - Click **"Add New Service"** button
-- Fill form:
-  - Business Name: `Royal Caterers Premium`
-  - Category: `Catering`
-  - Description: `Premium catering with international cuisine for weddings and events`
-  - Price: `40000`
-  - Location: `Mumbai, Maharashtra`
-  - Contact: `+91 9876543210`
-  - Email: `contact@royal.com`
-  - Image URL: `https://images.unsplash.com/photo-1555244162-803834f70033?w=500`
+- Fill form with your service details
 - Click **"Save Service"**
 - Status shows: **PENDING** (yellow)
 
-**Step 3: Add More Services (Different Categories)**
-
-**Venue:**
-- Business Name: `Grand Palace Hall`
-- Category: `Venue`
-- Price: `80000`
-- Image: `https://images.unsplash.com/photo-1519167758481-83f29da8ae8d?w=500`
-
-**Photography:**
-- Business Name: `Studio Moments`
-- Category: `Photography`
-- Price: `25000`
-- Image: `https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=500`
-
-**Decorations:**
-- Business Name: `Elegant Decor`
-- Category: `Decorations`
-- Price: `20000`
-- Image: `https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=500`
-
-**Sound/DJ:**
-- Business Name: `Beat Masters`
-- Category: `Sound/DJ`
-- Price: `15000`
-- Image: `https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=500`
+**Step 3: Admin Approval**
+- Switch to admin dashboard
+- Click **"Pending"** tab
+- Review and click **"✓ Approve"**
+- Status changes to **APPROVED** (green)
 
 ---
 
@@ -171,43 +138,68 @@ SELECT name, email, role FROM users;
 - Click **"Get Recommendations"**
 - AI shows which categories you can afford:
   ```
-  ✅ Venue
   ✅ Catering
-  ✅ Photography
   ✅ Decorations
+  ✅ Photography
   ✅ Sound/DJ
-  💰 Total: ₹180,000
+  ✅ Makeup
+  ...
+  💰 Total Estimated: ₹XXX,XXX
   ```
 
-**Step 3: Browse Vendors**
-- Scroll down to "Browse Vendors"
-- Click category tabs: **All**, **Venue**, **Catering**, etc.
-- Only **APPROVED** vendors show up
-- Each card shows:
-  - Image
-  - Category badge
+**Step 3: Browse by Category**
+- Scroll to "Browse Vendors by Category"
+- You'll see **10 category cards** with images:
+  - 🏛️ Venue
+  - 🍽️ Catering
+  - 📸 Photography
+  - 🎨 Decorations
+  - 🎵 Sound/DJ
+  - 💄 Makeup
+  - 🚗 Car Rentals
+  - 👗 Dressing
+  - 🎤 MC/Anchor
+  - 💡 Lighting
+- Click any category card (e.g., **Venue**)
+
+**Step 4: Browse Vendors in Category**
+- Opens new page: `browse-vendors.html?category=Venue`
+- Shows all **approved** Venue vendors (5 samples)
+- Each vendor card shows:
+  - High-quality image
   - Business name
+  - Category badge
   - Description
   - Location
   - Price
+  - Rating
   - **"Add to Cart"** button
 
-**Step 4: Add to Cart**
-- Click **"Add to Cart"** on any vendor
-- Cart badge (🛒) updates: shows item count
-- Add multiple vendors from different categories
+**Step 5: Use Filters**
+- **Price Range**: Enter max price (e.g., 120000)
+- **Location**: Filter by city (e.g., Mumbai)
+- **Sort By**: Rating, Price (Low/High)
+- Click **"Apply Filters"**
 
-**Step 5: View Cart**
+**Step 6: Add to Cart**
+- Click **"Add to Cart"** on any vendor
+- Success message: `✅ Added to cart!`
+- Cart badge (🛒) updates with item count
+- Browse more categories and add items
+
+**Step 7: View Cart**
 - Click **cart icon** (🛒) in top-right
-- Modal popup shows:
-  - All added items
+- Modal shows:
+  - All added items with images
   - Each item's price
   - **Total amount**
-  - **Remove** button for each item
+- Items are automatically saved in database
 
-**Step 6: Place Order**
-- Click **"Place Order"** button
-- Success alert: `✅ Order placed successfully! Total: ₹XXX,XXX`
+**Step 8: Place Order**
+- Click **"Place Order"** button in cart (from user dashboard)
+- Success alert with styled message
+- Order saved in `orders` table
+- Individual items saved in `order_items` table
 - Cart clears automatically
 
 ---
@@ -253,9 +245,10 @@ Try different budgets in AI Planner:
 
 ### Database Tables Created Automatically:
 1. **users** - Stores all users (USER, VENDOR, ADMIN)
-2. **vendors** - Stores all vendor services
-3. **cart_items** - Stores user cart items
-4. **orders** - Stores placed orders
+2. **vendors** - Stores all vendor services with details and images
+3. **cart_items** - Stores user cart items (vendorName, category, price, imageUrl)
+4. **orders** - Stores placed orders with total amount
+5. **order_items** - Stores individual items in each order
 
 ### Data Flow:
 
@@ -305,6 +298,9 @@ SELECT * FROM cart_items;
 
 # View orders:
 SELECT * FROM orders;
+
+# View order items:
+SELECT * FROM order_items;
 
 # Exit:
 \q
@@ -381,27 +377,32 @@ DELETE FROM users WHERE email = 'test@test.com';
 
 - [ ] PostgreSQL running
 - [ ] Database `eventdb` created
+- [ ] `mvn spring-boot:run` shows "✅ Sample vendor data initialized successfully!"
 - [ ] `mvn spring-boot:run` shows "Started EventApplication"
 - [ ] Can open http://localhost:8088/index.html
-- [ ] Admin account created and promoted
-- [ ] Vendor account created
-- [ ] Vendor added services (5+ in different categories)
-- [ ] Admin approved all services
+- [ ] Admin account created (via signup with Administrator role)
+- [ ] Admin dashboard shows 27 pre-loaded vendors
+- [ ] Vendor account created (optional)
+- [ ] Vendor can add services (optional)
+- [ ] Admin can approve vendor services
 - [ ] User account created
 - [ ] AI budget planner gives recommendations
-- [ ] Can browse vendors by category
+- [ ] Can browse vendors by category (10 category cards visible)
+- [ ] Can view category-specific vendors on browse page
+- [ ] Can filter vendors by price and location
 - [ ] Can add to cart and see count
 - [ ] Can place order successfully
+- [ ] Order items saved in database
 
 ---
 
 ## 🎬 5-MINUTE DEMO FLOW
 
-1. **Minute 1**: Create admin, promote role in database
-2. **Minute 2**: Create vendor, add 3 services
-3. **Minute 3**: Admin approves all services
-4. **Minute 4**: Create user, use AI planner with ₹150k
-5. **Minute 5**: Add items to cart, place order
+1. **Minute 1**: Create admin account (select Administrator role in signup)
+2. **Minute 2**: View admin dashboard - see 27 pre-loaded vendors
+3. **Minute 3**: Create user account, use AI planner with ₹150k
+4. **Minute 4**: Browse category cards, click Venue, view 5 venue options
+5. **Minute 5**: Add items to cart from different categories, place order
 
 ---
 

@@ -542,10 +542,10 @@
 
         <!-- Browse Vendors Section -->
         <div class="card">
-            <h2>🏪 Browse Vendors</h2>
-            <div class="category-tabs" id="categoryTabs"></div>
-            <div class="vendor-grid" id="vendorGrid">
-                <div class="loading">Loading vendors...</div>
+            <h2>🏪 Browse Vendors by Category</h2>
+            <p style="color: #666; margin-bottom: 20px;">Select a category to browse available vendors</p>
+            <div class="vendor-grid" id="categoryGrid">
+                <div class="loading">Loading categories...</div>
             </div>
         </div>
     </div>
@@ -578,91 +578,68 @@
             currentUser = JSON.parse(userStr);
             document.getElementById('userName').textContent = currentUser.name;
 
-            loadCategories();
-            loadVendors();
+            loadCategoryCards();
             updateCartCount();
         };
 
-        // Load Categories
-        async function loadCategories() {
+        // Load Category Cards
+        async function loadCategoryCards() {
             try {
                 const response = await fetch(`${API_BASE}/vendor/categories`);
                 const categories = await response.json();
 
-                const tabsContainer = document.getElementById('categoryTabs');
-                tabsContainer.innerHTML = '<div class="tab active" onclick="filterByCategory(\'All\')">All</div>';
+                const categoryEmojis = {
+                    'Venue': '🏛️',
+                    'Catering': '🍽️',
+                    'Photography': '📸',
+                    'Decorations': '🎨',
+                    'Sound/DJ': '🎵',
+                    'Makeup': '💄',
+                    'Car Rentals': '🚗',
+                    'Dressing': '👗',
+                    'MC/Anchor': '🎤',
+                    'Lighting': '💡'
+                };
 
-                categories.forEach(category => {
-                    const tab = document.createElement('div');
-                    tab.className = 'tab';
-                    tab.textContent = category;
-                    tab.onclick = () => filterByCategory(category);
-                    tabsContainer.appendChild(tab);
-                });
-            } catch (error) {
-                console.error('Error loading categories:', error);
-            }
-        }
+                const categoryImages = {
+                    'Venue': 'https://images.unsplash.com/photo-1519167758481-83f29da8c8b0?w=400',
+                    'Catering': 'https://images.unsplash.com/photo-1555244162-803834f70033?w=400',
+                    'Photography': 'https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=400',
+                    'Decorations': 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=400',
+                    'Sound/DJ': 'https://images.unsplash.com/photo-1571266028243-d220c677a2c6?w=400',
+                    'Makeup': 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?w=400',
+                    'Car Rentals': 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400',
+                    'Dressing': 'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400',
+                    'MC/Anchor': 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=400',
+                    'Lighting': 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=400'
+                };
 
-        // Load Vendors
-        async function loadVendors() {
-            try {
-                const response = await fetch(`${API_BASE}/vendor/approved`);
-                allVendors = await response.json();
-                displayVendors(allVendors);
-            } catch (error) {
-                console.error('Error loading vendors:', error);
-                document.getElementById('vendorGrid').innerHTML =
-                    '<div class="empty-vendors">Failed to load vendors. Please try again.</div>';
-            }
-        }
-
-        // Filter by Category
-        function filterByCategory(category) {
-            currentCategory = category;
-
-            // Update active tab
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.textContent === category) {
-                    tab.classList.add('active');
-                }
-            });
-
-            // Filter vendors
-            const filtered = category === 'All'
-                ? allVendors
-                : allVendors.filter(v => v.category === category);
-
-            displayVendors(filtered);
-        }
-
-        // Display Vendors
-        function displayVendors(vendors) {
-            const grid = document.getElementById('vendorGrid');
-
-            if (vendors.length === 0) {
-                grid.innerHTML = '<div class="empty-vendors">No vendors available in this category yet.</div>';
-                return;
-            }
-
-            grid.innerHTML = vendors.map(vendor => `
-                <div class="vendor-card">
-                    <div class="vendor-image">
-                        ${vendor.imageUrl ? `<img src="${vendor.imageUrl}" alt="${vendor.businessName}">` : '🏪'}
-                    </div>
-                    <div class="vendor-info">
-                        <div class="vendor-category">${vendor.category}</div>
-                        <div class="vendor-name">${vendor.businessName}</div>
-                        <div class="vendor-description">${vendor.description || 'Quality service for your event'}</div>
-                        <div class="vendor-location">📍 ${vendor.location || 'Available'}</div>
-                        <div class="vendor-details">
-                            <div class="vendor-price">₹${vendor.price.toLocaleString()}</div>
-                            <button class="btn-add-cart" onclick="addToCart(${vendor.id})">Add to Cart</button>
+                const grid = document.getElementById('categoryGrid');
+                grid.innerHTML = categories.map(category => `
+                    <div class="vendor-card" onclick="browseCategoryVendors('${category}')" style="cursor: pointer;">
+                        <div class="vendor-image">
+                            <img src="${categoryImages[category] || 'https://via.placeholder.com/400x300?text=' + category}"
+                                 alt="${category}"
+                                 onerror="this.parentElement.innerHTML='${categoryEmojis[category] || '🏪'}'">
+                        </div>
+                        <div class="vendor-info">
+                            <div class="vendor-name">${categoryEmojis[category] || '🏪'} ${category}</div>
+                            <div class="vendor-description">Browse all ${category.toLowerCase()} services available for your event</div>
+                            <button class="btn-add-cart" onclick="event.stopPropagation(); browseCategoryVendors('${category}')">
+                                Browse ${category} →
+                            </button>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                document.getElementById('categoryGrid').innerHTML =
+                    '<div class="empty-vendors">Failed to load categories. Please try again.</div>';
+            }
+        }
+
+        function browseCategoryVendors(category) {
+            window.location.href = `browse-vendors.html?category=${encodeURIComponent(category)}`;
         }
 
         // Get AI Suggestions

@@ -509,10 +509,10 @@
         <div class="card">
             <h2>🏪 Vendor Management</h2>
             <div class="tabs">
-                <button class="tab active" onclick="filterVendors('ALL')">All Vendors</button>
-                <button class="tab" onclick="filterVendors('PENDING')">Pending</button>
-                <button class="tab" onclick="filterVendors('APPROVED')">Approved</button>
-                <button class="tab" onclick="filterVendors('REJECTED')">Rejected</button>
+                <button class="tab active" onclick="filterVendors('ALL', this)">All Vendors</button>
+                <button class="tab" onclick="filterVendors('PENDING', this)">Pending</button>
+                <button class="tab" onclick="filterVendors('APPROVED', this)">Approved</button>
+                <button class="tab" onclick="filterVendors('REJECTED', this)">Rejected</button>
             </div>
             <div class="vendor-list" id="vendorList">
                 <div class="empty-state">
@@ -665,14 +665,16 @@
         }
 
         // Filter Vendors
-        function filterVendors(status) {
+        function filterVendors(status, element) {
             currentFilter = status;
 
             // Update active tab
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            event.target.classList.add('active');
+            if (element) {
+                element.classList.add('active');
+            }
 
             // Filter vendors
             const filtered = status === 'ALL'

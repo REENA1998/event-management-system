@@ -24,9 +24,9 @@ public class CartController {
     private VendorRepository vendorRepo;
 
     @PostMapping("/add")
-    public ResponseEntity<?> addToCart(@RequestBody Map<String, Long> request) {
-        Long userId = request.get("userId");
-        Long vendorId = request.get("vendorId");
+    public ResponseEntity<?> addToCart(@RequestBody Map<String, Object> request) {
+        Long userId = ((Number) request.get("userId")).longValue();
+        Long vendorId = ((Number) request.get("vendorId")).longValue();
 
         // Fetch vendor from database
         Optional<Vendor> vendorOpt = vendorRepo.findById(vendorId);
@@ -42,8 +42,19 @@ public class CartController {
         CartItem item = new CartItem();
         item.setUserId(userId);
         item.setVendorId(vendorId);
-        item.setItemName(vendor.getBusinessName());
-        item.setPrice(vendor.getPrice());
+
+        // Use provided values or fallback to vendor data
+        item.setVendorName(request.containsKey("vendorName") ?
+            (String) request.get("vendorName") : vendor.getBusinessName());
+        item.setCategory(request.containsKey("category") ?
+            (String) request.get("category") : vendor.getCategory());
+        item.setPrice(request.containsKey("price") ?
+            ((Number) request.get("price")).doubleValue() : vendor.getPrice());
+        item.setImageUrl(request.containsKey("imageUrl") ?
+            (String) request.get("imageUrl") : vendor.getImageUrl());
+
+        // Set itemName for backward compatibility
+        item.setItemName(item.getVendorName());
 
         cartRepo.save(item);
 
